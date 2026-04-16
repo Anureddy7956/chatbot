@@ -1,5 +1,4 @@
-# Chatbot Project
-
+# This repository contains a Chatbot Project developed during the IISc Bangalore workshop on Agentic and Generative AI, with assistance from Antigravity.
 A Python chatbot using the `google-genai` library and `gemini-2.5-flash-lite` model.
 
 ## Folder Architecture
