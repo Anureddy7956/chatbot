@@ -1,0 +1,19 @@
+{
+    "Alice": {
+        "preferences": [
+            "coffee"
+        ]
+    },
+    "Anya": {
+        "preferences": [
+            "briyani",
+            "to have chicken biriyani"
+        ]
+    },
+    "Vasu": {
+        "preferences": [
+            "cofee and sweets",
+            "to eat"
+        ]
+    }
+}
