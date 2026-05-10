@@ -1,0 +1,98 @@
+[
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "Hi"
+            }
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            {
+                "text": "Hello! I am your receptionist. May I know your name?"
+            }
+        ]
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "hey my name is anya"
+            }
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            {
+                "text": "Hi Anya! It's nice to meet you. I see from your past preferences that you enjoy biryani. Is there anything I can help you with today?"
+            }
+        ]
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "what is the menu"
+            }
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            {
+                "text": "Here is our current menu:\n\n**Appetizers:**\n*   Samosas (Vegetable or Lamb)\n*   Onion Bhajis\n*   Paneer Tikka\n*   Chicken Tikka\n\n**Main Courses:**\n*   **Biryani (Chicken, Lamb, Vegetable)** - *Our specialty!*\n*   Butter Chicken\n*   Lamb Korma\n*   Saag Paneer\n*   Dal Makhani\n*   Tandoori Chicken\n\n**Sides:**\n*   Naan (Plain, Garlic, Butter)\n*   Rice (Basmati, Jeera)\n*   Raita\n*   Salad\n\n**Desserts:**\n*   Gulab Jamun\n*   Kheer\n\nWould you like to hear more about any of these dishes, or perhaps start an order?"
+            }
+        ]
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "i like to have chicken biriyani"
+            }
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            {
+                "text": "Excellent choice, Anya! One chicken biryani coming right up. Would you like to add any sides or appetizers to your order?"
+            }
+        ]
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "desert egulab jamun"
+            }
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            {
+                "text": "You got it! One chicken biryani and one gulab jamun. Is there anything else I can get for you today?"
+            }
+        ]
+    },
+    {
+        "role": "user",
+        "parts": [
+            {
+                "text": "bye"
+            }
+        ]
+    },
+    {
+        "role": "model",
+        "parts": [
+            {
+                "text": "Goodbye, Anya! Enjoy your meal!"
+            }
+        ]
+    }
+]
