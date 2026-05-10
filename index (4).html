@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Module 1 — From Chatbot to Agent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Header -->
+  <header class="bg-indigo-700 text-white py-8 px-6 shadow">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap items-center gap-3 mb-2">
+        <span class="bg-indigo-500 text-white text-sm font-bold px-3 py-1 rounded-full">Module 1</span>
+        <span class="bg-green-400 text-green-900 text-sm font-bold px-3 py-1 rounded-full">Day 1</span>
+        <span class="bg-yellow-300 text-yellow-900 text-sm font-bold px-3 py-1 rounded-full">60 min</span>
+        <span class="bg-blue-300 text-blue-900 text-sm font-bold px-3 py-1 rounded-full">Beginner</span>
+      </div>
+      <h1 class="text-3xl font-bold">From Chatbot to Agent</h1>
+      <p class="mt-2 text-indigo-200">Build an autonomous agent step by step — each step adds one new memory type</p>
+    </div>
+  </header>
+
+  <!-- Step Progress -->
+  <div class="bg-white border-b px-6 py-3 sticky top-0 z-10 shadow-sm">
+    <div class="max-w-4xl mx-auto flex gap-2 text-xs font-semibold flex-wrap">
+      <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full">Step 1 — No Memory</span>
+      <span class="text-gray-400">→</span>
+      <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">Step 2 — Short-Term</span>
+      <span class="text-gray-400">→</span>
+      <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full">Step 3 — Long-Term</span>
+      <span class="text-gray-400">→</span>
+      <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full">Step 4 — Semantic</span>
+      <span class="text-gray-400">→</span>
+      <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full">Step 5 — Episodic</span>
+      <span class="text-gray-400">→</span>
+      <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">Step 6 — Full Agent</span>
+    </div>
+  </div>
+
+  <main class="max-w-4xl mx-auto px-6 py-10 space-y-16">
+
+    <!-- INTRO -->
+    <section>
+      <h2 class="text-2xl font-bold mb-3">What We're Building</h2>
+      <p class="text-gray-700 leading-relaxed mb-4">A chatbot just responds to whatever you say. An <strong>AI Agent</strong> perceives the situation, plans what to do, and acts — then repeats. The key ingredient that separates them is <strong>memory</strong>.</p>
+      <p class="text-gray-700 leading-relaxed">In this module, we start from a chatbot with zero memory and progressively add all four types. By the end, you'll have an agent that remembers who you are across sessions, searches a knowledge base, and keeps a diary.</p>
+    </section>
+
+    <!-- MEMORY TYPES OVERVIEW -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">The 4 Memory Types</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+          <h3 class="font-bold text-yellow-800">1. Short-Term Memory</h3>
+          <p class="text-sm mt-1 text-yellow-900">The current conversation — kept as a list in RAM. Gone when the program closes.</p>
+          <p class="text-xs mt-2 text-yellow-700 font-mono">conversation_history = []</p>
+        </div>
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <h3 class="font-bold text-blue-800">2. Long-Term Memory</h3>
+          <p class="text-sm mt-1 text-blue-900">Facts saved to a JSON file on disk. Survives restarts. Stores name and preferences.</p>
+          <p class="text-xs mt-2 text-blue-700 font-mono">user_profile.json</p>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+          <h3 class="font-bold text-purple-800">3. Semantic Memory</h3>
+          <p class="text-sm mt-1 text-purple-900">A knowledge base in FAISS. The agent searches it before answering to find relevant facts. Index is built once and saved to disk.</p>
+          <p class="text-xs mt-2 text-purple-700 font-mono">knowledge.index + knowledge_docs.json</p>
+        </div>
+        <div class="bg-orange-50 rounded-lg p-4 border border-orange-200">
+          <h3 class="font-bold text-orange-800">4. Episodic Memory</h3>
+          <p class="text-sm mt-1 text-orange-900">A diary of past interactions — what was asked and what was answered, timestamped.</p>
+          <p class="text-xs mt-2 text-orange-700 font-mono">agent_diary.json</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 1 -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <section id="step1">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-red-600 text-white font-bold px-3 py-1 rounded-full text-sm">STEP 1</span>
+        <h2 class="text-2xl font-bold">No Memory Chatbot</h2>
+      </div>
+      <p class="text-gray-600 mb-4">File: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono text-sm">v1_no_memory.py</code></p>
+
+      <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-5 mb-5">
+        <h3 class="font-bold text-red-700 mb-2">⚠️ Run this first — feel the problem</h3>
+        <p class="text-sm text-red-800">Run <code>v1_no_memory.py</code> and try:</p>
+        <ol class="list-decimal list-inside text-sm text-red-800 mt-2 space-y-1">
+          <li>Type: <strong>My name is Alex</strong></li>
+          <li>Type: <strong>What is my name?</strong></li>
+          <li>Notice the agent has no idea who you are</li>
+        </ol>
+      </div>
+
+      <div class="bg-white border rounded-lg p-5 shadow-sm mb-4">
+        <p class="text-xs uppercase text-gray-400 font-bold mb-3">Architecture — Step 1</p>
+        <div class="mermaid">
+flowchart LR
+    U([User message]) --> G[gemini-2.5-flash-lite\nsingle call]
+    G --> R([Response])
+    style G fill:#ef4444,color:#fff
+    note1[No history passed.\nEvery call is fresh.]
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-bold text-red-700 uppercase mb-1">❌ What happens</p>
+          <pre class="bg-gray-900 text-red-400 rounded p-3 text-xs">
+You: My name is Alex
+Bot: Nice to meet you, Alex!
+
+You: What is my name?
+Bot: I don't have access to personal
+     information about you.
+
+[Completely forgot in 1 message]</pre>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-blue-700 uppercase mb-1">💡 Why this happens</p>
+          <pre class="bg-gray-900 text-blue-400 rounded p-3 text-xs">
+# Each call sends only this:
+response = client.models.generate_content(
+    model=MODEL,
+    contents=user_message  # ← only current message
+)
+# Previous messages: never sent
+# The model sees nothing before</pre>
+        </div>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
+        <p class="text-xs font-bold text-gray-500 uppercase mb-2">Vibe Coding Prompt — Step 1</p>
+        <p class="text-sm bg-gray-50 rounded p-3 font-mono text-gray-700">"Create a Python script using the google-genai SDK. Import genai, create a Client() that reads GEMINI_API_KEY from environment. In a while loop, ask the user for input and call client.models.generate_content(model='gemini-2.5-flash-lite', contents=user_input). Print the response.text. Each call should be completely independent — no history."</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 2 -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <section id="step2">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-yellow-500 text-white font-bold px-3 py-1 rounded-full text-sm">STEP 2</span>
+        <h2 class="text-2xl font-bold">Short-Term Memory</h2>
+      </div>
+      <p class="text-gray-600 mb-4">File: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono text-sm">v2_with_memory.py</code></p>
+
+      <p class="text-gray-700 mb-4">Fix: keep a <code class="bg-gray-100 px-1 rounded font-mono text-sm">conversation_history</code> list. Append every message and pass the full list on every call. Now the model sees everything that was said before.</p>
+
+      <div class="bg-white border rounded-lg p-5 shadow-sm mb-4">
+        <p class="text-xs uppercase text-gray-400 font-bold mb-3">Architecture — Step 2</p>
+        <div class="mermaid">
+flowchart LR
+    U([User message]) --> HL[Append to\nhistory list]
+    HL --> G[gemini-2.5-flash-lite\nfull history passed]
+    G --> R([Response])
+    R --> HL2[Append response\nto history list]
+    style G fill:#eab308,color:#fff
+    style HL fill:#fef9c3
+    style HL2 fill:#fef9c3
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-bold text-green-700 uppercase mb-1">✅ What works now</p>
+          <pre class="bg-gray-900 text-green-400 rounded p-3 text-xs">
+You: My name is Alex
+Bot: Nice to meet you, Alex!
+
+You: What is my name?
+Bot: Your name is Alex!
+
+[Remembers within the session ✓]</pre>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-red-700 uppercase mb-1">❌ Still broken</p>
+          <pre class="bg-gray-900 text-red-400 rounded p-3 text-xs">
+[Close the program. Reopen.]
+
+You: What is my name?
+Bot: I don't know your name yet.
+
+[Session ended — history lost.
+ Long-term memory still missing.]</pre>
+        </div>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
+        <p class="text-xs font-bold text-gray-500 uppercase mb-2">Vibe Coding Prompt — Step 2</p>
+        <p class="text-sm bg-gray-50 rounded p-3 font-mono text-gray-700">"Add a conversation_history list. Before each model call, append the user message as {'role': 'user', 'content': message}. After each model call, append the response as {'role': 'model', 'content': reply}. Build the contents list by iterating over conversation_history and converting each entry into a types.Content object with types.Part(text=...). Pass the full contents list to generate_content."</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 3 -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <section id="step3">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-blue-600 text-white font-bold px-3 py-1 rounded-full text-sm">STEP 3</span>
+        <h2 class="text-2xl font-bold">Long-Term Memory</h2>
+      </div>
+      <p class="text-gray-600 mb-4">File: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono text-sm">step_03_long_term.py</code></p>
+
+      <p class="text-gray-700 mb-4">Fix: save the user's name to <code class="bg-gray-100 px-1 rounded font-mono text-sm">user_profile.json</code> whenever they mention it. Load it at startup. Now the agent remembers you even after closing and reopening.</p>
+
+      <div class="bg-white border rounded-lg p-5 shadow-sm mb-4">
+        <p class="text-xs uppercase text-gray-400 font-bold mb-3">Architecture — Step 3</p>
+        <div class="mermaid">
+flowchart LR
+    START([Startup]) --> LP[load_profile\nuser_profile.json]
+    LP --> AL[Agent Loop]
+    AL --> DN{Name\ndetected?}
+    DN -- Yes --> SP[save_profile\nto disk]
+    DN -- No --> G[Generate response\nwith full history]
+    SP --> G
+    G --> AL
+    style LP fill:#3b82f6,color:#fff
+    style SP fill:#3b82f6,color:#fff
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-bold text-green-700 uppercase mb-1">✅ What works now</p>
+          <pre class="bg-gray-900 text-green-400 rounded p-3 text-xs">
+[Session 1]
+You: My name is Alex
+Bot: Got it! I'll remember you as Alex.
+[user_profile.json saved ✓]
+
+[Close. Reopen. Session 2]
+→ Welcome back, Alex!
+
+[Remembered across sessions ✓]</pre>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-blue-700 uppercase mb-1">💡 How it works</p>
+          <pre class="bg-gray-900 text-blue-400 rounded p-3 text-xs">
+# On startup:
+profile = load_profile()
+# {"name": "Alex", "preferences": []}
+
+# On shutdown (or name detected):
+save_profile(profile)
+# → writes user_profile.json
+
+# user_profile.json:
+{
+  "name": "Alex",
+  "preferences": []
+}</pre>
+        </div>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
+        <p class="text-xs font-bold text-gray-500 uppercase mb-2">Vibe Coding Prompt — Step 3</p>
+        <p class="text-sm bg-gray-50 rounded p-3 font-mono text-gray-700">"Add two functions: load_profile() that reads user_profile.json if it exists and returns a dict with 'name' and 'preferences', else returns defaults. And save_profile(profile) that writes the dict to user_profile.json with indent=2. At startup call load_profile(). When the user says 'My name is X', extract X, update profile['name'], and call save_profile(profile). At startup, if profile has a name, greet the user by name."</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 4 -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <section id="step4">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-purple-600 text-white font-bold px-3 py-1 rounded-full text-sm">STEP 4</span>
+        <h2 class="text-2xl font-bold">Semantic Memory (FAISS)</h2>
+      </div>
+      <p class="text-gray-600 mb-4">File: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono text-sm">step_04_semantic.py</code></p>
+
+      <p class="text-gray-700 mb-4">Long-term memory stores facts about <em>users</em>. Semantic memory stores knowledge about <em>the world</em>. We use <strong>FAISS</strong> — a local vector database that finds the most similar text to a given query. The index is built once on first run using <strong>Gemini embeddings</strong> and saved to disk — no re-seeding on future runs. Before answering, the agent searches for relevant background knowledge and injects it into context.</p>
+
+      <div class="bg-white border rounded-lg p-5 shadow-sm mb-4">
+        <p class="text-xs uppercase text-gray-400 font-bold mb-3">Architecture — Step 4</p>
+        <div class="mermaid">
+flowchart TD
+    U([User Query]) --> RK[retrieve_knowledge\nFAISS similarity search]
+    RK --> |found| INJ[Inject into context\nas background knowledge]
+    RK --> |not found| SKIP[Skip injection]
+    INJ --> G[Gemini call\nwith enriched context]
+    SKIP --> G
+    G --> R([Response])
+    style RK fill:#7c3aed,color:#fff
+    style INJ fill:#ede9fe
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-bold text-green-700 uppercase mb-1">✅ With semantic memory</p>
+          <pre class="bg-gray-900 text-green-400 rounded p-3 text-xs">
+You: Tell me about LLMs
+
+[Semantic memory: Large Language
+Models are AI systems trained on
+massive text data...]
+
+Bot: Large Language Models, or LLMs,
+are AI systems trained on vast amounts
+of text. They power tools like Gemini
+and GPT by learning language patterns
+from billions of examples...</pre>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-red-700 uppercase mb-1">❌ Without semantic memory</p>
+          <pre class="bg-gray-900 text-red-400 rounded p-3 text-xs">
+You: Tell me about LLMs
+
+Bot: LLMs are language models.
+They are used in AI applications.
+(generic, no grounding)
+
+[No domain knowledge injected.
+ Relies only on model's training.]</pre>
+        </div>
+      </div>
+
+      <div class="bg-purple-50 border border-purple-200 rounded p-4 text-sm text-purple-900 mt-4">
+        <strong>Key concept:</strong> FAISS uses <strong>embeddings</strong> — each text is converted to a list of numbers (via Gemini's <code>gemini-embedding-001</code> model) that captures its meaning. Similar texts have similar numbers. When you query, FAISS finds the texts whose numbers are closest to your query's numbers. No exact keyword matching needed. The index is saved locally as <code>knowledge_s4.index</code> so embeddings are only computed once.
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
+        <p class="text-xs font-bold text-gray-500 uppercase mb-2">Vibe Coding Prompt — Step 4</p>
+        <p class="text-sm bg-gray-50 rounded p-3 font-mono text-gray-700">"Add FAISS to the project. Import faiss and numpy. Write a load_or_build_index() function: if knowledge_s4.index and knowledge_s4_docs.json exist on disk, load and return them. Otherwise, call the Gemini gemini-embedding-001 model to embed 5 AI topic sentences, build a faiss.IndexFlatL2 index, add the vectors, then save the index and docs to disk. Write a retrieve_knowledge(query, index, docs) function that embeds the query and calls index.search() to find the nearest doc. Before each model call, call retrieve_knowledge() and if a result is found, prepend it to the contents as a user/model exchange using types.Content."</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 5 -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <section id="step5">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-orange-600 text-white font-bold px-3 py-1 rounded-full text-sm">STEP 5</span>
+        <h2 class="text-2xl font-bold">Episodic Memory (Agent Diary)</h2>
+      </div>
+      <p class="text-gray-600 mb-4">File: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono text-sm">step_05_episodic.py</code></p>
+
+      <p class="text-gray-700 mb-4">Episodic memory is a timestamped diary of past interactions. Every query and response is saved to <code class="bg-gray-100 px-1 rounded font-mono text-sm">agent_diary.json</code>. The agent (or you) can review past conversations across sessions.</p>
+
+      <div class="bg-white border rounded-lg p-5 shadow-sm mb-4">
+        <p class="text-xs uppercase text-gray-400 font-bold mb-3">Architecture — Step 5</p>
+        <div class="mermaid">
+flowchart LR
+    U([User Query]) --> G[Agent response]
+    G --> LE[log_episode\nappend to diary]
+    LE --> DJ[(agent_diary.json\ntimestamped log)]
+    G --> R([Output to user])
+    U2([User: diary]) --> SD[show_diary\nprint last 5 entries]
+    SD --> DJ
+    style LE fill:#ea580c,color:#fff
+    style DJ fill:#ffedd5
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-bold text-green-700 uppercase mb-1">✅ Diary output</p>
+          <pre class="bg-gray-900 text-green-400 rounded p-3 text-xs">
+You: diary
+
+--- Episodic Memory: 8 interactions ---
+[2026-04-10 09:12:03] Q: My name is Alex
+[2026-04-10 09:12:15] Q: What is ML?
+[2026-04-10 09:13:02] Q: Tell me about LLMs
+[2026-04-10 09:14:45] Q: What is RAG?
+[2026-04-10 09:15:11] Q: How do agents work?</pre>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-blue-700 uppercase mb-1">💡 agent_diary.json format</p>
+          <pre class="bg-gray-900 text-blue-400 rounded p-3 text-xs">
+[
+  {
+    "timestamp": "2026-04-10 09:12:03",
+    "query": "My name is Alex",
+    "response": "Got it! I'll remember you..."
+  },
+  {
+    "timestamp": "2026-04-10 09:12:15",
+    "query": "What is ML?",
+    "response": "Machine Learning is..."
+  }
+]</pre>
+        </div>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
+        <p class="text-xs font-bold text-gray-500 uppercase mb-2">Vibe Coding Prompt — Step 5</p>
+        <p class="text-sm bg-gray-50 rounded p-3 font-mono text-gray-700">"Write a log_episode(query, response) function that: loads agent_diary.json if it exists (else starts with empty list), appends a dict with keys 'timestamp' (time.strftime), 'query' (full string), and 'response' (first 200 chars), then saves back to file. Call log_episode after every interaction. Add a 'diary' command that loads and prints the last 5 entries."</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <!-- STEP 6 -->
+    <!-- ══════════════════════════════════════════════════════════════════════ -->
+    <section id="step6">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="bg-green-600 text-white font-bold px-3 py-1 rounded-full text-sm">STEP 6</span>
+        <h2 class="text-2xl font-bold">Full Agent — Perceive → Plan → Act</h2>
+      </div>
+      <p class="text-gray-600 mb-4">File: <code class="bg-gray-100 px-2 py-0.5 rounded font-mono text-sm">solution.py</code></p>
+
+      <p class="text-gray-700 mb-4">The final step wires all 4 memory types into a proper agent loop. We add <strong>Perception</strong> (classify the user's intent) and <strong>Planning</strong> (decide which action to take) before Acting. This is the foundation of every AI agent architecture.</p>
+
+      <div class="bg-white border rounded-lg p-5 shadow-sm mb-4">
+        <p class="text-xs uppercase text-gray-400 font-bold mb-3">Architecture — Step 6 (Final)</p>
+        <div class="mermaid">
+flowchart TD
+    U([User Input]) --> PER[Perceive\nclassify intent via Gemini]
+    PER --> PL{Plan\nwhich action?}
+    PL --> |update_name| UN[Update profile\nsave_profile]
+    PL --> |use_tool| UT[Call search_topic tool\nquery FAISS]
+    PL --> |respond| RS[Generate response\nfull context]
+    UN & UT & RS --> ACT[Act: return response]
+    ACT --> STM[(Short-term\nhistory list)]
+    ACT --> EPI[(Episodic\nagent_diary.json)]
+    ACT --> U
+    LTM[(Long-term\nuser_profile.json)] --> PER
+    SEM[(Semantic\nFAISS)] --> RS
+    style PER fill:#6366f1,color:#fff
+    style PL fill:#6366f1,color:#fff
+    style ACT fill:#059669,color:#fff
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-bold text-green-700 uppercase mb-1">✅ Full agent in action</p>
+          <pre class="bg-gray-900 text-green-400 rounded p-3 text-xs">
+Agent: Hello! Tell me your name.
+
+You: My name is Alex
+Agent: Nice to meet you, Alex!
+[Memory: profile saved ✓]
+
+[Close. Reopen.]
+Agent: Welcome back, Alex!
+
+You: Explain neural networks
+[Semantic: Neural Networks are...]
+Agent: Neural networks are systems
+inspired by the human brain...
+
+You: diary
+--- 3 past interactions ---
+[2026-04-10 09:12] My name is Alex</pre>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-indigo-700 uppercase mb-1">💡 Perceive function</p>
+          <pre class="bg-gray-900 text-indigo-400 rounded p-3 text-xs">
+# perceive() asks Gemini to classify
+# the user's intent as JSON:
+{
+  "intent": "inform_name",
+  "topic": null,
+  "name_mentioned": "Alex"
+}
+
+# plan() maps intent to action:
+"inform_name" → "update_name"
+"tool_needed"  → "use_tool"
+otherwise      → "respond"</pre>
+        </div>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm mt-4">
+        <p class="text-xs font-bold text-gray-500 uppercase mb-2">Vibe Coding Prompt — Step 6</p>
+        <p class="text-sm bg-gray-50 rounded p-3 font-mono text-gray-700">"Write a perceive(user_message) function that calls Gemini with a prompt asking it to classify the message into one of these intents: greeting, question, inform_name, inform_preference, tool_needed, other. Return JSON with keys: intent, topic, name_mentioned. Then write a plan(perception) function that returns the action string. Finally write an act(action, user_message, perception, profile, history) function with if/elif branches for each action. Wire main() to call perceive → plan → act and print memory stats after each response."</p>
+      </div>
+    </section>
+
+    <!-- SETUP -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Setup &amp; Run Order</h2>
+      <pre class="bg-gray-900 text-green-400 rounded-lg p-5 text-sm">
+cd module-01-chatbot-to-agent
+pip install -r requirements.txt
+
+# Set API key (Windows)
+set GEMINI_API_KEY=your_key_here
+
+# Follow the steps in order:
+python v1_no_memory.py         # Step 1: feel the problem
+python v2_with_memory.py       # Step 2: short-term memory
+python step_03_long_term.py    # Step 3: long-term memory
+python step_04_semantic.py     # Step 4: semantic memory
+python step_05_episodic.py     # Step 5: episodic memory
+python solution.py             # Step 6: full agent</pre>
+    </section>
+
+    <!-- Before vs After Full -->
+    <section>
+      <h2 class="text-2xl font-bold mb-4">Full Before vs After</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-red-600 font-bold mb-2">v1 — Chatbot (no memory)</h3>
+          <pre class="bg-gray-900 text-red-400 rounded p-4 text-sm">
+You: My name is Alex
+Bot: Nice to meet you!
+
+You: What is my name?
+Bot: I don't know.
+
+[Close and reopen]
+Bot: Hello! How can I help?
+[Never knew your name]</pre>
+        </div>
+        <div>
+          <h3 class="text-green-600 font-bold mb-2">solution.py — Full Agent</h3>
+          <pre class="bg-gray-900 text-green-400 rounded p-4 text-sm">
+You: My name is Alex
+Agent: Got it, Alex! [saved ✓]
+
+You: What is my name?
+Agent: Your name is Alex.
+
+[Close. Reopen.]
+Agent: Welcome back, Alex!
+
+You: diary → shows past history ✓
+You: Explain AI → uses knowledge ✓
+[Memory: 4 types active]</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Challenge Extensions -->
+    <section class="bg-indigo-50 border border-indigo-200 rounded-lg p-6">
+      <h2 class="text-xl font-bold text-indigo-800 mb-3">Challenge Extensions</h2>
+      <ul class="space-y-2 text-indigo-900">
+        <li>🔸 Add more documents to the FAISS knowledge base and test semantic retrieval accuracy</li>
+        <li>🔸 Add a 'forget me' command that deletes user_profile.json</li>
+        <li>🔸 Add a 'summary' command that asks Gemini to summarise the episodic diary</li>
+        <li>🔸 Add a preference detection — when user says "I like X", save it to preferences list in profile</li>
+      </ul>
+    </section>
+
+  </main>
+  <footer class="text-center text-gray-400 text-sm py-6">Agentic AI Workshop — Module 1 of 7</footer>
+</body>
+</html>
